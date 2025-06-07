@@ -16,7 +16,9 @@ def load_config(config_abs):
     config = ConfigParser()
     config.read(config_abs)
 
-    assert list(config.keys()) == ['DEFAULT', 'mpd', 'download_dirs', 'debug', 'http', 'proxy', 'threadpool', 'deezer', 'youtubedl'], f"Validating config file failed. Check {config_abs}"
+    expected_sections = {'mpd', 'download_dirs', 'debug', 'http', 'proxy', 'threadpool', 'deezer', 'youtubedl'}
+    actual_sections = set(config.sections())
+    assert expected_sections.issubset(actual_sections), f"Missing required sections in config file. Found: {actual_sections}"
 
     if config['mpd'].getboolean('use_mpd'):
         if not config['mpd']['music_dir_root'].startswith(config['download_dirs']['base']):

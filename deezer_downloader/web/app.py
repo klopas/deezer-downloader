@@ -88,7 +88,15 @@ def index():
     return render_template("index.html",
                            api_root=config["http"]["api_root"],
                            static_root=config["http"]["static_root"],
-                           use_mpd=str(config['mpd'].getboolean('use_mpd')).lower())
+                           use_mpd=str(config['mpd'].getboolean('use_mpd')).lower(),
+                           ui_visibility={
+                              "show_youtubedl_tab": config.getboolean("ui", "show_youtubedl_tab"),
+                              "show_spotify_tab": config.getboolean("ui", "show_spotify_tab"),
+                              "show_deezer_tab": config.getboolean("ui", "show_deezer_tab"),
+                              "show_files_tab": config.getboolean("ui", "show_files_tab"),
+                              "show_debug_tab": config.getboolean("ui", "show_debug_tab"),
+                              "show_queue_tab": config.getboolean("ui", "show_queue_tab")
+                           })
 
 
 @app.route("/debug")
