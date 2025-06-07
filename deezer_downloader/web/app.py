@@ -269,3 +269,28 @@ def deezer_favorites_download():
                               add_to_playlist=user_input['add_to_playlist'],
                               create_zip=user_input['create_zip'])
     return jsonify({"task_id": id(task), })
+
+from flask import send_file
+from io import BytesIO
+from deezer_downloader.deezer import get_song_infos_from_deezer_website, download_song_to_memory
+from zipfile import ZipFile, ZIP_DEFLATED
+
+@app.route('/download/track/<int:track_id>', methods=['GET'])
+def download_track_memory(track_id):
+    song = get_song_infos_from_deezer_website("track", track_id)
+    filename = f"{song['ART_NAME']} - {song['SNG_TITLE']}.mp3"
+    memory_file = download_song_to_memory(song)
+    return send_file(memory_file, as_attachment=True, download_name=filename, mimetype='audio/mpeg')
+
+
+@app.route('/download/album/<int:album_id>', methods=['GET'])
+def download_album_zip_memory(album_id):
+    songs = get_song_infos_from_deezer_website("album", album_id)
+    zip_buffer = BytesIO()
+    with ZipFile(zip_buffer, 'w', ZIP_DEFLATED) as zip_file:
+        for song in songs:
+            filename = f"{int(song['TRACK_NUMBER']):02d} - {song['ART_NAME']} - {song['SNG_TITLE']}.mp3"
+            memory_song = download_song_to_memory(song)
+            zip_file.writestr(filename, memory_song.getvalue())
+    zip_buffer.seek(0)
+    return send_file(zip_buffer, as_attachment=True, download_name="album.zip", mimetype='application/zip')

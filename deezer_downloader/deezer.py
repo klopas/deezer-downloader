@@ -599,3 +599,19 @@ def test_deezer_login():
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == "check-login":
         test_deezer_login()
+
+from io import BytesIO
+
+def download_song_to_memory(song: dict) -> BytesIO:
+    url = get_song_url(song["TRACK_TOKEN"])
+    key = calcbfkey(song["SNG_ID"])
+    memfile = BytesIO()
+
+    with session.get(url, stream=True) as response:
+        response.raise_for_status()
+        writeid3v2(memfile, song)
+        decryptfile(response, key, memfile)
+        writeid3v1_1(memfile, song)
+
+    memfile.seek(0)
+    return memfile

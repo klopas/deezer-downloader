@@ -106,7 +106,7 @@ $(document).ready(function() {
 
     function drawTableEntry(rowData, mtype) {
         var row = $("<tr>");
-        $("#results").append(row); 
+        $("#results").append(row);
         var button_col = $("<td style='text-align: end'>");
 
         if (mtype === "track" || mtype === "album_track" || mtype === "artist_top") {
@@ -157,16 +157,16 @@ $(document).ready(function() {
                 button_col.append($('<button class="btn btn-default"> <i class="fa fa-play-circle fa-lg" title="download and queue to mpd" ></i> </button>')
                     .click(() => deezer_download(rowData.id, rowData.id_type, true, false)));
             }
-            // Solo añadir botón de descarga directa si NO es un álbum
-            if (rowData.id_type !== "album") {
-                button_col.append($('<button class="btn btn-default"> <i class="fa fa-download fa-lg" title="download" ></i> </button>')
-                    .click(() => deezer_download(rowData.id, rowData.id_type, false, false)));
+
+            // 🎯 MODIFICACIÓN: botón de descarga directa (solo tracks)
+            if (rowData.id_type === "track") {
+                button_col.append($('<a class="btn btn-default" href="/download/track/' + rowData.id + '"> <i class="fa fa-download fa-lg" title="download track" ></i> </a>'));
             }
         }
 
-        if(rowData.id_type == "album") {
-            button_col.append($('<button class="btn btn-default"> <i class="fa fa-file-archive-o fa-lg" title="download as zip file" ></i> </button>')
-            .click(() => deezer_download(rowData.id, rowData.id_type, false, true)));
+        // 🎯 MODIFICACIÓN: botón para descargar álbum como zip
+        if (rowData.id_type === "album") {
+            button_col.append($('<a class="btn btn-default" href="/download/album/' + rowData.id + '"> <i class="fa fa-file-archive-o fa-lg" title="download album as zip file" ></i> </a>'));
         }
         row.append(button_col);
     }
