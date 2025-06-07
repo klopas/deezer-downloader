@@ -9,3 +9,8 @@ dist
 *.sh
 .venv
 *.ini
+*.xml
+/*.xml
+*.iml
+/.idea/*
+/*.iml
