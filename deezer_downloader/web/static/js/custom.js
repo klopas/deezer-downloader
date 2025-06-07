@@ -151,15 +151,17 @@ $(document).ready(function() {
             button_col.append($('<button class="btn btn-default"> <i class="fa fa-list fa-lg" title="list artist albums" ></i> </button>')
                 .click(() => deezer_load_list("artist_album", rowData.artist_id)));
         }
-        
 
         if (mtype !== "artist") {
             if (show_mpd_features) {
                 button_col.append($('<button class="btn btn-default"> <i class="fa fa-play-circle fa-lg" title="download and queue to mpd" ></i> </button>')
                     .click(() => deezer_download(rowData.id, rowData.id_type, true, false)));
             }
-            button_col.append($('<button class="btn btn-default" > <i class="fa fa-download fa-lg" title="download" ></i> </button>')
-                .click(() => deezer_download(rowData.id, rowData.id_type, false, false)));
+            // Solo añadir botón de descarga directa si NO es un álbum
+            if (rowData.id_type !== "album") {
+                button_col.append($('<button class="btn btn-default"> <i class="fa fa-download fa-lg" title="download" ></i> </button>')
+                    .click(() => deezer_download(rowData.id, rowData.id_type, false, false)));
+            }
         }
 
         if(rowData.id_type == "album") {
